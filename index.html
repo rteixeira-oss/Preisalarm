@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Preisalarm Sommer 2027</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f4f7f8; --surface:#fff; --fg:#14232b; --muted:#5a6d75; --line:#d6e0e4; --soft:#e7eef1;
+  --up:#b4382f; --down:#1e7a4c;
+  --c1:#c0392b; --c2:#0f8a8a; --c3:#7a4fb3; --c4:#c27a12;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e171b; --surface:#152229; --fg:#e3edf1; --muted:#91a6af; --line:#273a43; --soft:#1c2f37;
+  --up:#ef7a6f; --down:#5cc48d; --c1:#ef7d6f; --c2:#4cc7c4; --c3:#b796e6; --c4:#e8a64a; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:780px;margin:0 auto;padding:28px 16px 56px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,6vw,40px);line-height:1.05;margin:4px 0 8px}
+.lead{color:var(--muted);margin:0}
+nav{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:2}
+nav button{font:500 14px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:8px 14px;border-radius:999px;cursor:pointer}
+nav button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,5vw,28px);margin:0}
+.route{color:var(--muted);margin:2px 0 0}
+.route b{color:var(--fg);font-weight:500}
+.meta{color:var(--muted);font-size:13px;margin:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.card,.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.card{padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card .k{display:flex;align-items:center;gap:8px;font-weight:500}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.card .t{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.card .v{font-family:var(--display);font-weight:600;font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.card .v small{font-size:.45em;color:var(--muted);margin-left:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:12px;padding:3px 9px;border-radius:999px;background:var(--soft);font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)}
+.panel{padding:16px}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:18px;border-top:2.5px solid;vertical-align:middle;margin-right:6px}
+.tbl{overflow-x:auto;padding:0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.num,th.num{text-align:right}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.info{color:var(--muted);font-size:13px;white-space:normal;min-width:160px}
+.note{font-size:13px;color:var(--muted);margin:0}
+footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+section[hidden]{display:none!important}
+section.trip{display:flex;flex-direction:column;gap:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Preisalarm · Familienferien August 2027</div>
+    <h1>Flugpreise im Verlauf</h1>
+    <p class="lead">Jeden Abend automatisch gemessen. 2 Erwachsene + 1 Kind, Economy mit Koffer, Preise in CHF für alle 3 zusammen.</p>
+  </header>
+  <nav id="nav" aria-label="Reiseziel wählen"></nav>
+  <main id="trips"></main>
+  <footer>Grün = günstiger als bei der vorherigen Messung, rot = teurer. «Referenz» ist der Preis beim Start der Beobachtung. Angaben ohne Gewähr, massgebend ist der Preis beim Buchen.</footer>
+</div>
+
+<script>
+const TRIPS=[
+  {id:"mallorca",file:"data/mallorca.json",title:"Zürich ⇄ Palma de Mallorca",
+   route:"<b>04.08. – 20.08.2027</b> · nur Direktflüge · je 1 Koffer 23 kg",
+   series:[
+     {key:"total",name:"A · Edelweiss",times:"WK 246 hin 11:25 · WK 247 zurück 13:40",ref:936.69,color:"var(--c1)"},
+     {key:"totalB",name:"B · Bestpreis Direktflug",times:null,info:"bInfo",ref:522.13,color:"var(--c2)"}],
+   info:"bInfo",infoLabel:"B Flüge",
+   note:"A: Edelweiss, direkt auf flyedelweiss.com gemessen. B: günstigster Direktflug aller Airlines mit 3 Koffern laut Kiwi.com, Airline und Zeiten wechseln je nach Tag."},
+  {id:"lissabon",file:"data/lissabon.json",title:"Zürich ⇄ Lissabon (TAP)",
+   route:"<b>04.08. – 20.08.2027</b> · TAP direkt · Tarif mit Koffer, Handgepäck und Sitzplatz",
+   series:[
+     {key:"total",name:"A · Früh/früh",times:"06:20 hin · 08:35 zurück",ref:1009.8,color:"var(--c1)"},
+     {key:"totalB",name:"B · Kompromiss",times:"13:50 hin · 08:35 zurück",ref:1052.8,color:"var(--c4)"},
+     {key:"totalC",name:"C · Wunschzeiten",times:"13:50 hin · 18:40 zurück",ref:1119.8,color:"var(--c3)"}],
+   note:"Preise direkt von flytap.com, nur Direktflüge."},
+  {id:"kohsamui",file:"data/kohsamui.json",title:"Zürich ⇄ Koh Samui",
+   route:"<b>01.08. – 20.08.2027</b> · mit Aufgabegepäck · Preise laut Booking.com",
+   series:[
+     {key:"A1",name:"A1 · Thai via Bangkok",times:"hin 20:25 · zurück 18:55",ref:3223.60,color:"var(--c1)"},
+     {key:"A2",name:"A2 · Thai via Bangkok",times:"hin 13:30 · zurück 18:55",ref:3489,color:"var(--c4)"},
+     {key:"B1",name:"B1 · Stopover Bangkok",times:"Thai hin, Rückflug Swiss/Bangkok Airways",ref:4459.70,color:"var(--c2)"},
+     {key:"B2",name:"B2 · Stopover Bangkok",times:"nur Thai",ref:5316,color:"var(--c3)"}],
+   info:"note",infoLabel:"Notiz",
+   note:"A = ohne Stopover (Umsteigen in Bangkok). B = 5 Tage Stopover in Bangkok (01.08. Zürich–Bangkok, 06.08. Bangkok–Koh Samui, 20.08. zurück)."}
+];
+const NS="http://www.w3.org/2000/svg";
+const num=v=>typeof v==="number"&&isFinite(v);
+const fmt=n=>{const [i,f]=Math.abs(n).toFixed(2).split(".");const s=i.replace(/\B(?=(\d{3})+(?!\d))/g,"'");return (n<0?"-":"")+(f==="00"?s:s+"."+f);};
+const signed=n=>(n>0?"▲ +":n<0?"▼ −":"= ±")+fmt(Math.abs(n));
+const dcls=d=>d>0?"up":d<0?"down":"";
+const fmtDate=s=>{const [y,m,d]=s.split("-");return `${d}.${m}.${y.slice(2)}`;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e;};
+const prevOf=(list,key,i)=>{for(let j=i-1;j>=0;j--) if(num(list[j][key])) return list[j][key]; return null;};
+
+const nav=document.getElementById("nav"), main=document.getElementById("trips");
+function show(id){
+  TRIPS.forEach(t=>{document.getElementById(t.id).hidden=t.id!==id;document.getElementById("b-"+t.id).setAttribute("aria-pressed",t.id===id);});
+  history.replaceState(null,"","#"+id);
+}
+TRIPS.forEach(t=>{
+  const b=document.createElement("button"); b.id="b-"+t.id; b.textContent=t.title.replace("Zürich ⇄ ","").replace(" (TAP)",""); b.onclick=()=>show(t.id); nav.appendChild(b);
+  const s=document.createElement("section"); s.className="trip"; s.id=t.id;
+  s.innerHTML=`<div><h2>${t.title}</h2><p class="route">${t.route}</p></div>
+    <div class="cards"></div><p class="meta">Daten werden geladen …</p>
+    <div class="panel"><svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Preisverlauf"></svg>
+      <div class="legend">${t.series.map(v=>`<span><i style="border-color:${v.color}"></i>${v.name}</span>`).join("")}</div></div>
+    <div class="tbl panel"><table><thead><tr><th>Datum</th>${t.series.map(v=>`<th class="num">${v.key.replace("total","A").replace("AB","B").replace("AC","C")}</th>`).join("")}${t.info?`<th>${t.infoLabel}</th>`:""}</tr></thead><tbody></tbody></table></div>
+    <p class="note">${t.note}</p>`;
+  main.appendChild(s);
+  fetch(t.file+"?v="+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(list=>render(t,s,list.filter(r=>r&&r.date).sort((a,b)=>a.date<b.date?-1:1)))
+    .catch(()=>{s.querySelector(".meta").textContent="Die Daten konnten nicht geladen werden.";});
+});
+show(TRIPS.some(t=>"#"+t.id===location.hash)?location.hash.slice(1):TRIPS[0].id);
+
+function render(t,s,list){
+  const cards=s.querySelector(".cards"); cards.innerHTML="";
+  t.series.forEach(v=>{
+    const idx=list.map(r=>num(r[v.key])).lastIndexOf(true);
+    const cur=idx>=0?list[idx][v.key]:null, p=idx>=0?prevOf(list,v.key,idx):null;
+    const times=v.times||(idx>=0&&list[idx][v.info]?list[idx][v.info]:"Airline je nach Tag");
+    const c=document.createElement("div"); c.className="card";
+    c.innerHTML=`<div class="k"><span class="dot" style="background:${v.color}"></span>${v.name}</div><div class="t">${esc(times)}</div>
+      <div class="v">${cur==null?"–":fmt(cur)}<small>CHF</small></div>
+      <div class="chips">${cur==null?'<span class="chip">noch keine Messung</span>':
+        (p!=null?`<span class="chip ${dcls(cur-p)}">Vortag ${signed(+(cur-p).toFixed(2))}</span>`:"")+
+        `<span class="chip ${dcls(cur-v.ref)}">Referenz ${signed(+(cur-v.ref).toFixed(2))}</span>`}</div>`;
+    cards.appendChild(c);
+  });
+  s.querySelector(".meta").textContent=list.length?`Letzte Messung: ${fmtDate(list[list.length-1].date)} · ${list.length} Messung${list.length>1?"en":""}`:"Noch keine Messung.";
+  const tb=s.querySelector("tbody"); tb.innerHTML="";
+  [...list].reverse().forEach((r,ri)=>{
+    const i=list.length-1-ri;
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${fmtDate(r.date)}</td>`+t.series.map(v=>{
+      const p=num(r[v.key])?prevOf(list,v.key,i):null; const d=p!=null?+(r[v.key]-p).toFixed(2):0;
+      return `<td class="num ${dcls(d)}">${num(r[v.key])?fmt(r[v.key]):"–"}</td>`;}).join("")+(t.info?`<td class="info">${r[t.info]?esc(r[t.info]):"–"}</td>`:"");
+    tb.appendChild(tr);
+  });
+  drawChart(s.querySelector("svg"),t,list);
+}
+function niceStep(raw){const p=Math.pow(10,Math.floor(Math.log10(raw)));const n=raw/p;return (n<1.5?1:n<3?2:n<7?5:10)*p;}
+function drawChart(svg,t,list){
+  svg.innerHTML="";
+  const W=700,H=300,L=68,R=20,T=18,B=40;
+  const vals=[]; list.forEach(r=>t.series.forEach(v=>num(r[v.key])&&vals.push(r[v.key])));
+  if(!vals.length){el("text",{x:350,y:150,"text-anchor":"middle",fill:"var(--muted)","font-size":14},svg).textContent="Das Diagramm füllt sich ab der ersten Messung.";return;}
+  let min=Math.min(...vals),max=Math.max(...vals);
+  const pad=Math.max(25,(max-min)*0.15); min=Math.floor((min-pad)/10)*10; max=Math.ceil((max+pad)/10)*10;
+  const x=i=>list.length===1?L+(W-L-R)/2:L+i*(W-L-R)/(list.length-1);
+  const y=v=>T+(max-v)*(H-T-B)/(max-min);
+  const step=niceStep((max-min)/4);
+  for(let v=Math.ceil(min/step)*step;v<=max;v+=step){
+    el("line",{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:"var(--line)","stroke-width":1},svg);
+    el("text",{x:L-8,y:y(v)+4,"text-anchor":"end",fill:"var(--muted)","font-size":12,"font-family":"var(--mono)"},svg).textContent=fmt(v);
+  }
+  t.series.forEach(v=>{
+    const pts=list.map((r,i)=>num(r[v.key])?[x(i),y(r[v.key])]:null).filter(Boolean);
+    if(pts.length>1) el("polyline",{points:pts.map(p=>p.join(",")).join(" "),fill:"none",stroke:v.color,"stroke-width":2.5,"stroke-linejoin":"round","stroke-linecap":"round"},svg);
+    pts.forEach((p,k)=>{const last=k===pts.length-1;el("circle",{cx:p[0],cy:p[1],r:last?5.5:3,fill:v.color,stroke:"var(--surface)","stroke-width":last?2:1},svg);});
+  });
+  const every=Math.max(1,Math.ceil(list.length/6));
+  list.forEach((r,i)=>{if(i%every===0||i===list.length-1)
+    el("text",{x:x(i),y:H-B+22,"text-anchor":list.length>1&&i===0?"start":list.length>1&&i===list.length-1?"end":"middle",fill:"var(--muted)","font-size":12,"font-family":"var(--mono)"},svg).textContent=fmtDate(r.date).slice(0,5);});
+}
+</script>
+</body>
+</html>
