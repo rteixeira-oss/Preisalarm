@@ -1,3 +1,10 @@
 [
-  {"date":"2026-10-20","A1":3223.60,"A2":3489,"B1":4459.70,"B2":5316,"note":"Startwerte"}
+ {
+  "date": "2026-10-20",
+  "A1": null,
+  "A2": null,
+  "B1": 4907,
+  "B2": 5329,
+  "note": "WARNUNG: A1 nicht mehr verfügbar; Thai A nur noch 13:30→08:15 / Rück 21:00→07:50 für 6'413 CHF (A2 mit 18:55-Rückflug nicht verfügbar); B1 +10.0 %; günstigstes B mit Gepäck = B1"
+ }
 ]
