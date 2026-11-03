@@ -11,5 +11,6 @@
 {"date": "2026-10-29", "total": 933.27, "out": 372.7, "ret": 560.57, "totalB": 501.95, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"},
 {"date": "2026-10-30", "total": 927.53, "out": 372.7, "ret": 554.83, "totalB": 500.59, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"},
 {"date": "2026-10-31", "total": 924.09, "out": 372.7, "ret": 551.39, "totalB": 501.89, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"},
-{"date": "2026-11-02", "total": 923.94, "out": 372.7, "ret": 551.24, "totalB": 501.83, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"}
+{"date": "2026-11-02", "total": 923.94, "out": 372.7, "ret": 551.24, "totalB": 501.83, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"},
+{"date": "2026-11-03", "totalB": 497.64, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"}
 ]
