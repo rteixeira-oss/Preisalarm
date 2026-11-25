@@ -28,5 +28,6 @@
 {"date": "2026-11-21", "total": 919.53, "out": 372.7, "ret": 546.83, "totalB": 554.52, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"},
 {"date": "2026-11-22", "totalB": 554.52, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"},
 {"date": "2026-11-23", "total": 922.47, "out": 372.7, "ret": 549.77, "totalB": 705.85, "bInfo": "Iberia 17:55 hin · Iberia 07:10 zurück"},
-{"date": "2026-11-24", "total": 922.32, "out": 372.7, "ret": 549.62, "totalB": 548.25, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"}
+{"date": "2026-11-24", "total": 922.32, "out": 372.7, "ret": 549.62, "totalB": 548.25, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"},
+{"date": "2026-11-25", "total": 943.1, "out": 372.7, "ret": 570.4, "totalB": 544.96, "bInfo": "Vueling 17:55 hin · Vueling 07:10 zurück"}
 ]
